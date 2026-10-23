@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Dashboard | RawStock</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: #f3f6fb;
+            color: #172033;
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background: #142d52;
+            color: white;
+            padding: 22px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        header h1 { margin: 0 0 6px; font-size: 24px; }
+        header p { margin: 0; color: #d5dfef; }
+        button {
+            cursor: pointer;
+            border: 0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: bold;
+        }
+        .logout { background: #f3c65d; color: #172033; }
+        main { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .welcome { margin-bottom: 22px; }
+        .welcome h2 { margin-bottom: 6px; }
+        .muted { color: #687386; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+        .stat, .panel {
+            background: white;
+            border: 1px solid #e3e8f0;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 4px 16px #142d5208;
+        }
+        .stat span { color: #687386; font-size: 14px; }
+        .stat strong { display: block; margin-top: 10px; font-size: 28px; }
+        .panel h2 { margin-top: 0; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 850px; }
+        th, td {
+            text-align: left;
+            padding: 14px 12px;
+            border-bottom: 1px solid #e8edf4;
+            vertical-align: top;
+        }
+        th {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #687386;
+            background: #f8fafc;
+        }
+        .badge {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 6px 9px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #e8edf4;
+        }
+        .pending { background: #fff1cc; color: #805800; }
+        .accepted { background: #dcecff; color: #174a85; }
+        .rejected { background: #ffe2e0; color: #a12622; }
+        .completed { background: #d9f6e4; color: #17653a; }
+        .partial { background: #eee4ff; color: #6035a3; }
+        .actions { display: flex; flex-wrap: wrap; gap: 7px; }
+        .accept { background: #176c43; color: white; }
+        .reject { background: #b42318; color: white; }
+        button:disabled { opacity: .5; cursor: wait; }
+        #notice { margin: 16px 0; line-height: 1.5; }
+        .error { color: #b42318; }
+        .success { color: #176c43; }
+        .empty { padding: 28px; text-align: center; color: #687386; }
+        @media (max-width: 650px) {
+            header { align-items: flex-start; }
+            .stats { grid-template-columns: 1fr; }
+            main { margin-top: 20px; }
+        }
+        /* Delivery commitment form */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.58);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal-backdrop.open {
+    display: flex;
+}
+
+.delivery-modal {
+    width: 100%;
+    max-width: 460px;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px #0003;
+}
+
+.delivery-modal h2 {
+    margin-top: 0;
+}
+
+.delivery-modal label {
+    display: block;
+    margin: 18px 0 7px;
+    font-weight: bold;
+}
+
+.delivery-modal input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.delivery-modal input:focus {
+    outline: 2px solid #176c43;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.cancel-btn {
+    background: #e8edf4;
+    color: #172033;
+}
+
+.delivery-info {
+    background: #f3f6fb;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+    .panel-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.panel-heading h2 { margin-bottom: 4px; }
+.refresh-requests { background: #e7eef8; color: #142d52; }
+.supplier-request-actions { min-width: 190px; flex-wrap: wrap; align-items: center; }
+.accept-btn { background: #176c43; color: white; }
+.reject-btn { background: #b42318; color: white; }
+.expected-date-label { display: block; width: 100%; font-size: 12px; color: #526176; font-weight: 600; }
+.expected-date-input { width: 100%; min-width: 155px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; font: inherit; }
+</style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>RawStock Supplier Portal</h1>
+            <p>Manage your assigned supply requests</p>
+        </div>
+        <button class="logout" id="logoutButton" type="button">Logout</button>
+    </header>
+
+    <main>
+        <section class="welcome">
+            <h2 id="welcomeName">Supplier Dashboard</h2>
+            <p class="muted">Review requests and update your delivery commitment.</p>
+        </section>
+
+        <section class="stats">
+            <div class="stat">
+                <span>Total assigned requests</span>
+                <strong id="totalCount">—</strong>
+            </div>
+            <div class="stat">
+                <span>Awaiting your response</span>
+                <strong id="pendingCount">—</strong>
+            </div>
+            <div class="stat">
+                <span>Accepted / in progress</span>
+                <strong id="activeCount">—</strong>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Your Supply Requests</h2>
+                    <p class="muted">New requests assigned by Admin appear here.</p>
+                </div>
+                <button type="button" class="refresh-requests" id="refreshRequestsButton">↻ Refresh requests</button>
+            </div>
+            <p id="notice" role="status" aria-live="polite"></p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Request</th>
+                            <th>Material ID</th>
+                            <th>Requested Qty</th>
+                            <!-- <th>Received Qty</th> -->
+                             <th>Delivery Days</th>
+                            <th>Required By</th>
+                            <th>Expected Delivery</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsBody">
+                        <tr>
+                            <td colspan="8" class="empty">Loading requests...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+<div class="modal-backdrop" id="deliveryModal">
+    <section class="delivery-modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="deliveryModalTitle">
+
+        <h2 id="deliveryModalTitle">Confirm Delivery Commitment</h2>
+
+        <p id="deliveryRequestInfo" class="delivery-info"></p>
+
+        <form id="deliveryForm">
+            <label for="deliveryDaysInput">
+                Estimated delivery time (days)
+            </label>
+
+            <input
+                id="deliveryDaysInput"
+                type="number"
+                min="1"
+                step="1"
+                required
+            >
+
+            <p id="deliveryDatePreview" class="muted"></p>
+            <p id="deliveryFormError" class="error" role="alert"></p>
+
+            <div class="modal-actions">
+                <button type="button" class="cancel-btn"
+                        id="cancelDeliveryButton">
+                    Cancel
+                </button>
+
+                <button type="submit" class="accept">
+                    Confirm Acceptance
+                </button>
+            </div>
+        </form>
+    </section>
+</div>
+    <script src="js/frontend/supplier-dashboard.js"></script>
+</body>
+</html>

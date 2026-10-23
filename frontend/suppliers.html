@@ -1,0 +1,539 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Suppliers | RawStock</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/restock-layout-fix.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo-area">
+            <div class="logo-icon">R</div>
+
+            <div>
+                <h2>RawStock</h2>
+                <span>Inventory System</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                <span>▣</span>
+                Dashboard
+            </a>
+
+            <a href="materials.html">
+                <span>◈</span>
+                Materials
+            </a>
+
+            <a href="stock.html">
+                <span>⇅</span>
+                Stock
+            </a>
+
+            <a href="suppliers.html" class="active">
+                <span>♙</span>
+                Suppliers
+            </a>
+
+            <a href="bom.html">
+                <span>▤</span>
+                BOM
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <button onclick="logout()" class="logout-btn">
+                ⇥ Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Suppliers</h1>
+                <p>Manage raw material suppliers</p>
+            </div>
+
+            <div class="admin-profile">
+
+                <div class="avatar">
+                    A
+                </div>
+
+                <div>
+                    <strong>Admin</strong>
+                    <small>Super Admin</small>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE INTRO -->
+        <section class="page-intro">
+
+            <div>
+                <h2>Supplier Management</h2>
+
+                <p>
+                    Add, update and manage your raw material suppliers.
+                </p>
+            </div>
+
+            <button
+                class="primary-btn"
+                onclick="openSupplierModal()">
+
+                + Add Supplier
+
+            </button>
+
+        </section>
+
+
+        <!-- SUMMARY -->
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ♙
+                </div>
+
+                <div>
+                    <span>Total Suppliers</span>
+                    <strong id="totalSuppliers">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Registered Suppliers</span>
+                    <strong id="registeredSuppliers">0</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUPPLIER TABLE -->
+        <section class="content-card">
+
+            <div class="table-header">
+
+                <div>
+                    <h3>Supplier Directory</h3>
+                    <p>All suppliers registered in RawStock</p>
+                </div>
+
+                <button
+                    class="refresh-btn"
+                    onclick="loadSuppliers()">
+
+                    ↻ Refresh
+
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Supplier Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <!-- <th>Actions</th> -->
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="supplierTableBody">
+
+                        <tr>
+                            <td colspan="7" class="loading">
+                                Loading suppliers...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- SUPPLY REQUESTS / RESTOCKING -->
+        <section class="content-card restock-section">
+
+            <div class="table-header restock-section-header">
+
+                <div>
+                    <h3>Supplier Restocking</h3>
+                    <p>Create supply requests and track actual deliveries.</p>
+                </div>
+
+                <button
+                    type="button"
+                    class="refresh-btn"
+                    onclick="loadSupplyRequests()">
+
+                    ↻ Refresh Requests
+
+                </button>
+
+            </div>
+
+
+            <!-- CREATE REQUEST FORM -->
+            <form id="supplyRequestForm" class="restock-form">
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="requestSupplier">
+                            Supplier
+                        </label>
+
+                        <select id="requestSupplier" required>
+                            <option value="">Loading suppliers...</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="requestMaterial">
+                            Raw Material
+                        </label>
+
+                        <select id="requestMaterial" required>
+                            <option value="">Loading materials...</option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="requestedQuantity">
+                            Requested Quantity
+                        </label>
+
+                        <input
+                            type="number"
+                            id="requestedQuantity"
+                            min="0.01"
+                            step="any"
+                            placeholder="Enter quantity"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="requiredDate">
+                            Required By
+                        </label>
+
+                        <input
+                            type="date"
+                            id="requiredDate"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group full-width">
+
+                        <label for="requestNotes">
+                            Notes (Optional)
+                        </label>
+
+                        <textarea
+                            id="requestNotes"
+                            rows="2"
+                            placeholder="Add delivery instructions or notes"></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="restock-form-actions">
+
+                    <button type="submit" class="primary-btn">
+                        + Create Supply Request
+                    </button>
+
+                </div>
+
+
+                <p
+                    id="supplyRequestMessage"
+                    class="restock-message"
+                    role="status"
+                    aria-live="polite">
+                </p>
+
+            </form>
+
+
+            <!-- REQUEST HISTORY -->
+            <div class="table-header restock-history-header">
+
+                <div>
+                    <h3>Supply Request History</h3>
+                    <p>Track requested, received, and remaining quantities.</p>
+                </div>
+
+            </div>
+
+
+            <div class="table-container restock-history-container">
+
+                <table class="restock-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Request</th>
+                            <th>Supplier</th>
+                            <th>Material</th>
+                            <th>Requested</th>
+                            <th>Received</th>
+                            <th>Required By</th>
+                            <th>Expected Delivery</th>
+                            <th>Actual Delivery</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="supplyRequestTableBody">
+
+                        <tr>
+                            <td colspan="10" class="loading">
+                                Loading supply requests...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- SUPPLIER MODAL -->
+<div id="supplierModal" class="modal-overlay">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+                <h2 id="modalTitle">Add Supplier</h2>
+
+                <p>
+                    Enter supplier information
+                </p>
+            </div>
+
+            <button
+                class="modal-close"
+                onclick="closeSupplierModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <form id="supplierForm">
+
+            <input
+                type="hidden"
+                id="supplierId">
+
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label for="username">Username</label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="supplier_username"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="supplierName">Supplier Name</label>
+
+                    <input
+                        type="text"
+                        id="supplierName"
+                        placeholder="ABC Raw Materials"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="phone">Phone</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        placeholder="9876543210"
+                        maxlength="10"
+                        pattern="[0-9]{10}"
+                        inputmode="numeric"
+                        required>
+
+                </div>
+                
+<div class="form-group">
+
+    
+<div class="form-group">
+
+    <label for="supplierPassword">Initial Password</label>
+
+    <input
+        type="password"
+        id="supplierPassword"
+        placeholder="Set supplier login password (required for new suppliers)"
+        minlength="8"
+        autocomplete="new-password">
+
+</div>
+
+
+
+
+                <div class="form-group">
+
+                    <label for="email">Email</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="supplier@gmail.com"
+                        pattern="[a-zA-Z0-9._%+-]+@gmail\.com"
+                        required>
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label for="address">Address</label>
+
+                    <textarea
+                        id="address"
+                        rows="3"
+                        placeholder="Supplier address"
+                        required></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeSupplierModal()">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Save Supplier
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="js/suppliers.js"></script>
+<!-- <script src="js/notifications.js"></script> -->
+
+</body>
+</html>

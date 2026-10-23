@@ -1,0 +1,33 @@
+# Java / Maven build outputs
+backend/target/
+
+# Local secrets and IDE files
+.env
+backend/.env
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
+backend/run-error.txt
+# Node.js dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Frontend build output
+frontend/dist/
+frontend/build/
+
+# Python generated files and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Environment files
+.env.*
+!.env.example
+
+backend/error-log.txt

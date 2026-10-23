@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Stock | RawStock</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo-area">
+            <div class="logo-icon">R</div>
+
+            <div>
+                <h2>RawStock</h2>
+                <span>Inventory System</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                <span>▣</span>
+                Dashboard
+            </a>
+
+            <a href="materials.html">
+                <span>◈</span>
+                Materials
+            </a>
+
+            <a href="stock.html" class="active">
+                <span>⇅</span>
+                Stock
+            </a>
+
+            <a href="suppliers.html">
+                <span>♙</span>
+                Suppliers
+            </a>
+
+            <a href="bom.html">
+                <span>▤</span>
+                BOM
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <button onclick="logout()" class="logout-btn">
+                ⇥ Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOPBAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Stock Transactions</h1>
+                <p>Track all material stock movements</p>
+            </div>
+
+            <div class="admin-profile">
+
+                <!-- <div class="avatar">
+                    A
+                </div>
+
+                <div>
+                    <strong>Admin</strong>
+                    <small>Super Admin</small>
+                </div>
+
+            </div> -->
+            <div class="profile">
+
+                    <div class="profile-avatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong>Admin</strong>
+                        <span>Administrator</span>
+                    </div>
+
+                </div>
+
+
+        </header>
+
+
+        <!-- PAGE INTRO -->
+        <section class="page-intro">
+
+            <div>
+                <h2>Stock History</h2>
+
+                <p>
+                    View incoming and outgoing material transactions
+                    stored in the RawStock database.
+                </p>
+            </div>
+
+            <button class="refresh-btn" onclick="loadStock()">
+                ↻ Refresh
+            </button>
+
+        </section>
+
+
+        <!-- SUMMARY -->
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ⇅
+                </div>
+
+                <div>
+                    <span>Total Transactions</span>
+                    <strong id="totalTransactions">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ↓
+                </div>
+
+                <div>
+                    <span>Stock In</span>
+                    <strong id="stockInCount">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ↑
+                </div>
+
+                <div>
+                    <span>Stock Out</span>
+                    <strong id="stockOutCount">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ◉
+                </div>
+
+                <div>
+                    <span>Total Movement</span>
+                    <strong id="totalMovement">0</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FILTERS -->
+        <section class="content-card">
+
+            <div class="table-header">
+
+                <div>
+                    <h3>Transaction Records</h3>
+                    <p>Latest stock movements</p>
+                </div>
+
+                <div class="filter-buttons">
+
+                    <button
+                        class="filter-btn active"
+                        onclick="filterStock('ALL', this)">
+                        All
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        onclick="filterStock('IN', this)">
+                        Stock In
+                    </button>
+
+                    <button
+                        class="filter-btn"
+                        onclick="filterStock('OUT', this)">
+                        Stock Out
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- TABLE -->
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Material ID</th>
+
+                            <th>Transaction Type</th>
+
+                            <th>Quantity</th>
+
+                            <th>Date</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="stockTableBody">
+
+                        <tr>
+
+                            <td colspan="6" class="loading">
+                                Loading stock transactions...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script src="js/stock.js"></script>
+<!-- <script src="js/notifications.js"></script> -->
+
+</body>
+</html>

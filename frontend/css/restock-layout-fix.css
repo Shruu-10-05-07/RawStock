@@ -1,0 +1,20 @@
+/* Restock section layout fixes; loaded only on the Supplier Management page. */
+.restock-section { min-width: 0; }
+.restock-section-header, .restock-history-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.restock-form { width: 100%; }
+.restock-form .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.restock-form .form-group { min-width: 0; }
+.restock-form .form-group input, .restock-form .form-group select, .restock-form .form-group textarea { width: 100%; max-width: 100%; box-sizing: border-box; }
+.restock-form .full-width { grid-column: 1 / -1; }
+.restock-form-actions { display: flex; justify-content: flex-start; margin-top: 18px; }
+.restock-message { min-height: 1.4em; margin-top: 12px; }
+.restock-message.error { color: #b42318; }
+.restock-message.success { color: #176c43; }
+.restock-history-container { overflow-x: auto; }
+.restock-table { min-width: 1050px; width: 100%; }
+.restock-table th, .restock-table td { white-space: nowrap; }
+@media (max-width: 760px) {
+  .restock-form .form-grid { grid-template-columns: 1fr; }
+  .restock-form .full-width { grid-column: auto; }
+  .restock-section-header, .restock-history-header { align-items: stretch; }
+}

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RawStock | Materials</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo-area">
+            <div class="logo-icon">R</div>
+
+            <div>
+                <h2>RawStock</h2>
+                <span>Inventory System</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+
+            <a href="dashboard.html" class="nav-item">
+                <span>▦</span>
+                Dashboard
+            </a>
+
+            <a href="materials.html" class="nav-item active">
+                <span>◈</span>
+                Materials
+            </a>
+
+            <a href="stock.html" class="nav-item">
+                <span>⇅</span>
+                Stock
+            </a>
+
+            <a href="suppliers.html" class="nav-item">
+                <span>♙</span>
+                Suppliers
+            </a>
+
+            <a href="bom.html" class="nav-item">
+                <span>▤</span>
+                BOM
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+
+                <span class="status-dot"></span>
+
+                <div>
+                    <strong>System Online</strong>
+                    <small>PostgreSQL connected</small>
+                </div>
+
+            </div>
+
+            <button class="logout-btn"
+                    onclick="window.location.href='index.html'">
+                ⇥ Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div>
+                <span class="page-label">
+                    INVENTORY MANAGEMENT
+                </span>
+
+                <h1>Materials</h1>
+            </div>
+
+            <div class="topbar-right">
+<div class="profile">
+
+                    <div class="profile-avatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong>Admin</strong>
+                        <span>Administrator</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- PAGE INTRO -->
+        <section class="page-intro">
+
+            <div>
+
+                <span class="panel-label">
+                    RAW MATERIAL INVENTORY
+                </span>
+
+                <h2>Material Management</h2>
+
+                <p>
+                    Add, edit and monitor all raw materials,
+                    stock levels and packaging details.
+                </p>
+
+            </div>
+
+            <button class="primary-btn"
+                    onclick="openMaterialModal()">
+
+                <span>+</span>
+                Add Material
+
+            </button>
+
+        </section>
+
+
+        <!-- SEARCH / FILTER BAR -->
+        <section class="filter-card">
+
+            <div class="search-box">
+
+                <span>⌕</span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search by code, material, category or location..."
+                    oninput="searchMaterials()"
+                >
+
+                <button
+                    id="clearSearch"
+                    onclick="clearSearch()">
+                    ×
+                </button>
+
+            </div>
+
+
+            <select id="stockFilter"
+                    onchange="applyFilters()">
+
+                <option value="all">
+                    All Stock
+                </option>
+
+                <option value="available">
+                    In Stock
+                </option>
+
+                <option value="low">
+                    Restock Required
+                </option>
+
+                <option value="out">
+                    Out of Stock
+                </option>
+
+            </select>
+
+
+            <button class="refresh-btn"
+                    onclick="loadMaterials()">
+
+                ↻ Refresh
+
+            </button>
+
+        </section>
+
+
+        <!-- SUMMARY -->
+        <section class="material-summary">
+
+            <div class="mini-stat">
+
+                <span>Total Materials</span>
+
+                <strong id="materialCount">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="mini-stat">
+
+                <span>Available</span>
+
+                <strong id="availableCount">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="mini-stat warning">
+
+                <span>Restock Required</span>
+
+                <strong id="restockCount">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="mini-stat danger">
+
+                <span>Out of Stock</span>
+
+                <strong id="outOfStockCount">
+                    0
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- MATERIAL TABLE -->
+        <section class="dashboard-panel material-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span class="panel-label">
+                        INVENTORY
+                    </span>
+
+                    <h2>Raw Materials</h2>
+                </div>
+
+                <span id="resultText"
+                      class="result-text">
+                    Loading...
+                </span>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="materials-table">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Material</th>
+
+                        <th>Category</th>
+
+                        <th>Stock</th>
+
+                        <th>Purchase / Pack</th>
+
+                        <th>Location</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="materialsTable">
+
+                    <tr>
+
+                        <td colspan="7"
+                            class="table-loading">
+
+                            Loading materials...
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ==========================================
+     MATERIAL MODAL
+     ========================================== -->
+
+<div class="modal-overlay"
+     id="materialModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="panel-label">
+                    MATERIAL DETAILS
+                </span>
+
+                <h2 id="modalTitle">
+                    Add Material
+                </h2>
+
+            </div>
+
+            <button class="modal-close"
+                    onclick="closeMaterialModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="materialForm">
+
+
+            <input
+                type="hidden"
+                id="materialId"
+            >
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Material Code *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="materialCode"
+                        placeholder="e.g. RM001"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Material Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="materialName"
+                        placeholder="e.g. Cotton Fabric"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Category *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="category"
+                        placeholder="e.g. Textile"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Unit *
+                    </label>
+
+                    <select id="unit" required>
+
+                        <option value="">
+                            Select unit
+                        </option>
+
+                        <option value="Piece">
+                            Piece
+                        </option>
+
+                        <option value="Meter">
+                            Meter
+                        </option>
+
+                        <option value="Kg">
+                            Kg
+                        </option>
+
+                        <option value="Liter">
+                            Liter
+                        </option>
+
+                        <option value="Reel">
+                            Reel
+                        </option>
+
+                        <option value="Box">
+                            Box
+                        </option>
+
+                        <option value="Packet">
+                            Packet
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Current Quantity *
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantity"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Minimum Stock / Threshold *
+                    </label>
+
+                    <input
+                        type="number"
+                        id="minimumStock"
+                        min="0"
+                        step="0.01"
+                        placeholder="Restock below this level"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Storage Location
+                    </label>
+
+                    <input
+                        type="text"
+                        id="location"
+                        placeholder="e.g. Rack A1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Purchase Unit
+                    </label>
+
+                    <select id="purchaseUnit">
+
+                        <option value="">
+                            Select purchase type
+                        </option>
+
+                        <option value="Loose">
+                            Loose
+                        </option>
+
+                        <option value="Packet">
+                            Packet
+                        </option>
+
+                        <option value="Box">
+                            Box
+                        </option>
+
+                        <option value="Roll">
+                            Roll
+                        </option>
+
+                        <option value="Carton">
+                            Carton
+                        </option>
+
+                        <option value="Bundle">
+                            Bundle
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Pack Size
+                    </label>
+
+                    <input
+                        type="number"
+                        id="packSize"
+                        min="0"
+                        step="0.01"
+                        placeholder="e.g. 10"
+                    >
+
+                </div>
+
+
+                <div class="form-group full-width">
+
+                    <label>
+                        Pack Type / Description
+                    </label>
+
+                    <input
+                        type="text"
+                        id="packType"
+                        placeholder="e.g. 10 reels per packet"
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeMaterialModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Save Material
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     STOCK MODAL
+     ========================================== -->
+
+<div class="modal-overlay"
+     id="stockModal">
+
+    <div class="modal small-modal">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="panel-label">
+                    STOCK UPDATE
+                </span>
+
+                <h2 id="stockMaterialName">
+                    Material
+                </h2>
+
+            </div>
+
+            <button class="modal-close"
+                    onclick="closeStockModal()">
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="stockForm">
+
+            <input
+                type="hidden"
+                id="stockMaterialId"
+            >
+
+
+            <div class="current-stock-box">
+
+                <span>Current Stock</span>
+
+                <strong id="currentStock">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stock-type-selector">
+
+                <label class="stock-option">
+
+                    <input
+                        type="radio"
+                        name="stockType"
+                        value="IN"
+                        checked
+                    >
+
+                    <span>
+                        📥 Stock In
+                    </span>
+
+                </label>
+
+
+                <label class="stock-option">
+
+                    <input
+                        type="radio"
+                        name="stockType"
+                        value="OUT"
+                    >
+
+                    <span>
+                        📤 Stock Out
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Quantity
+                </label>
+
+                <input
+                    type="number"
+                    id="stockAmount"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Enter quantity"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Transaction Date
+                </label>
+
+                <input
+                    type="date"
+                    id="transactionDate"
+                    required
+                >
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="closeStockModal()">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Update Stock
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="js/materials.js"></script>
+<!-- <script src="js/notifications.js"></script> -->
+
+</body>
+
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>BOM | RawStock</title>
+
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/forms.css">
+
+</head>
+
+
+<body>
+
+<div class="app-layout">
+
+
+    <!-- ==============================
+         SIDEBAR
+    =============================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo-area">
+
+            <div class="logo-icon">
+                R
+            </div>
+
+            <div>
+
+                <h2>RawStock</h2>
+
+                <span>
+                    Inventory System
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                <span>▣</span>
+                Dashboard
+            </a>
+
+            <a href="materials.html">
+                <span>◈</span>
+                Materials
+            </a>
+
+            <a href="stock.html">
+                <span>⇅</span>
+                Stock
+            </a>
+
+            <a href="suppliers.html">
+                <span>♙</span>
+                Suppliers
+            </a>
+
+            <a
+                href="bom.html"
+                class="active">
+
+                <span>▤</span>
+                BOM
+
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button
+                onclick="logout()"
+                class="logout-btn">
+
+                ⇥ Logout
+
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ==============================
+         MAIN CONTENT
+    =============================== -->
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Bill of Materials
+                </h1>
+
+                <p>
+                    Calculate material requirements for production
+                </p>
+
+            </div>
+
+
+            <div class="admin-profile">
+
+                <div class="avatar">
+                    A
+                </div>
+
+                <div>
+
+                    <strong>
+                        Admin
+                    </strong>
+
+                    <small>
+                        Super Admin
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- PAGE INTRO -->
+
+        <section class="page-intro">
+
+            <div>
+
+                <h2>
+                    Production Material Calculator
+                </h2>
+
+                <p>
+                    Determine how much raw material is required
+                    before starting production.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             CALCULATOR
+        =============================== -->
+
+        <section class="bom-grid">
+
+
+            <!-- CALCULATION CARD -->
+
+            <div class="content-card bom-card">
+
+                <div class="bom-card-header">
+
+                    <div class="bom-icon">
+                        ×
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Material Requirement
+                        </h3>
+
+                        <p>
+                            Calculate total material needed
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="bomForm">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Material Required Per Product
+                        </label>
+
+                        <input
+                            type="number"
+                            id="quantityPerProduct"
+                            min="0.01"
+                            step="0.01"
+                            placeholder="Example: 2"
+                            required>
+
+                        <small class="field-help">
+                            Example: 2 meters of fabric per shirt
+                        </small>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Number of Products
+                        </label>
+
+                        <input
+                            type="number"
+                            id="numberOfProducts"
+                            min="1"
+                            step="1"
+                            placeholder="Example: 100"
+                            required>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-btn bom-calculate-btn">
+
+                        Calculate Requirement
+
+                    </button>
+
+                </form>
+
+
+                <!-- RESULT -->
+
+                <div
+                    id="calculationResult"
+                    class="bom-result hidden">
+
+                    <span>
+                        Required Material
+                    </span>
+
+                    <strong id="requiredMaterial">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STOCK CHECK CARD -->
+
+            <div class="content-card bom-card">
+
+                <div class="bom-card-header">
+
+                    <div class="bom-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Stock Availability
+                        </h3>
+
+                        <p>
+                            Check whether current stock is sufficient
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <form id="stockCheckForm">
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Available Stock
+                        </label>
+
+                        <input
+                            type="number"
+                            id="availableStock"
+                            min="0"
+                            step="0.01"
+                            placeholder="Example: 250"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>
+                            Required Stock
+                        </label>
+
+                        <input
+                            type="number"
+                            id="requiredStock"
+                            min="0"
+                            step="0.01"
+                            placeholder="Example: 200"
+                            required>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-btn bom-check-btn">
+
+                        Check Stock
+
+                    </button>
+
+                </form>
+
+
+                <!-- STOCK RESULT -->
+
+                <div
+                    id="stockResult"
+                    class="stock-result hidden">
+
+                    <div
+                        id="stockStatusIcon"
+                        class="stock-status-icon">
+
+                        ✓
+
+                    </div>
+
+                    <div>
+
+                        <strong id="stockStatus">
+                            Stock Available
+                        </strong>
+
+                        <span id="stockStatusText">
+                            Sufficient stock is available.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             FORMULA CARD
+        =============================== -->
+
+        <section class="content-card formula-card">
+
+            <div>
+
+                <span class="formula-label">
+                    BOM Formula
+                </span>
+
+                <h3>
+                    Required Material =
+                    Quantity Per Product ×
+                    Number of Products
+                </h3>
+
+            </div>
+
+
+            <div class="formula-example">
+
+                <span>
+                    Example
+                </span>
+
+                <strong>
+                    2 m × 100 shirts = 200 m
+                </strong>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             PRODUCTION FLOW
+        =============================== -->
+
+        <section class="content-card">
+
+            <div class="table-header">
+
+                <div>
+
+                    <h3>
+                        Production Check Flow
+                    </h3>
+
+                    <p>
+                        RawStock uses BOM calculations before production.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="bom-flow">
+
+                <div class="flow-step">
+
+                    <div class="flow-number">
+                        1
+                    </div>
+
+                    <strong>
+                        Define BOM
+                    </strong>
+
+                    <span>
+                        Material required per product
+                    </span>
+
+                </div>
+
+
+                <div class="flow-arrow">
+                    →
+                </div>
+
+
+                <div class="flow-step">
+
+                    <div class="flow-number">
+                        2
+                    </div>
+
+                    <strong>
+                        Calculate
+                    </strong>
+
+                    <span>
+                        Multiply by production quantity
+                    </span>
+
+                </div>
+
+
+                <div class="flow-arrow">
+                    →
+                </div>
+
+
+                <div class="flow-step">
+
+                    <div class="flow-number">
+                        3
+                    </div>
+
+                    <strong>
+                        Check Stock
+                    </strong>
+
+                    <span>
+                        Compare required and available
+                    </span>
+
+                </div>
+
+
+                <div class="flow-arrow">
+                    →
+                </div>
+
+
+                <div class="flow-step">
+
+                    <div class="flow-number">
+                        4
+                    </div>
+
+                    <strong>
+                        Production
+                    </strong>
+
+                    <span>
+                        Proceed if material is available
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+<script src="js/bom.js"></script>
+<!-- <script src="js/notifications.js"></script> -->
+
+</body>
+
+</html>

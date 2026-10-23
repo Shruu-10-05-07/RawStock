@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RawStock | Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+
+            <div class="logo-area">
+                <div class="logo-icon">R</div>
+
+                <div>
+                    <h2>RawStock</h2>
+                    <span>Inventory System</span>
+                </div>
+            </div>
+
+            <nav class="navigation">
+
+                <a href="dashboard.html" class="nav-item active">
+                    <span>▦</span>
+                    Dashboard
+                </a>
+
+                <a href="materials.html" class="nav-item">
+                    <span>◈</span>
+                    Materials
+                </a>
+
+                <a href="stock.html" class="nav-item">
+                    <span>⇅</span>
+                    Stock
+                </a>
+
+                <a href="suppliers.html" class="nav-item">
+                    <span>♙</span>
+                    Suppliers
+                </a>
+
+                <a href="bom.html" class="nav-item">
+                    <span>▤</span>
+                    BOM
+                </a>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <div class="system-status">
+                    <span class="status-dot"></span>
+
+                    <div>
+                        <strong>System Online</strong>
+                        <small>PostgreSQL connected</small>
+                    </div>
+                </div>
+
+                <button class="logout-btn" onclick="logout()">
+                    ⇥ Logout
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- TOP BAR -->
+            <header class="topbar">
+
+                <div>
+                    <span class="page-label">OVERVIEW</span>
+                    <h1>Dashboard</h1>
+                </div>
+
+                <div class="topbar-right">
+
+                    <div
+    class="notification-wrapper"
+    onclick="toggleNotifications()">
+
+    <button
+    class="notification"
+    id="notificationButton"
+    title="Restock notifications">
+
+    🔔
+
+    <span
+        class="notification-dot"
+        id="notificationDot">
+    </span>
+
+</button>
+
+    <!-- Notification Panel -->
+
+    <div
+        class="notification-panel"
+        id="notificationPanel">
+
+        <div class="notification-header">
+
+            <div>
+
+                <strong>
+                    Notifications
+                </strong>
+
+                <small>
+                    Inventory alerts
+                </small>
+
+            </div>
+
+            <span id="notificationCount">
+                0
+            </span>
+
+        </div>
+
+
+        <div
+            class="notification-list"
+            id="notificationList">
+
+            <div class="notification-empty">
+                Loading notifications...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+                    <div class="profile">
+
+                        <div class="profile-avatar">
+                            A
+                        </div>
+
+                        <div class="profile-info">
+                            <strong>Admin</strong>
+                            <span>Administrator</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- WELCOME -->
+            <section class="welcome-card">
+
+                <div>
+
+                    <span class="welcome-label">
+                        RAW MATERIAL MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Welcome back, Admin 👋
+                    </h2>
+
+                    <p>
+                        Monitor your inventory, stock levels and
+                        material requirements from one place.
+                    </p>
+
+                </div>
+
+                <div class="welcome-decoration">
+                    <div class="circle circle-one"></div>
+                    <div class="circle circle-two"></div>
+                    <span>R</span>
+                </div>
+
+            </section>
+
+
+            <!-- STAT CARDS -->
+            <section class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon materials-icon">
+                        ◈
+                    </div>
+
+                    <div class="stat-content">
+                        <span>Total Materials</span>
+                        <h3 id="totalMaterials">0</h3>
+                        <small>Registered materials</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon stock-icon">
+                        ⇅
+                    </div>
+
+                    <div class="stat-content">
+                        <span>Total Stock</span>
+                        <h3 id="totalStock">0</h3>
+                        <small>Available quantity</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card warning-card">
+
+                    <div class="stat-icon warning-icon">
+                        !
+                    </div>
+
+                    <div class="stat-content">
+                        <span>Restock Alerts</span>
+                        <h3 id="lowStockCount">0</h3>
+                        <small>Materials below threshold</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon supplier-icon">
+                        ♙
+                    </div>
+
+                    <div class="stat-content">
+                        <span>Suppliers</span>
+                        <h3 id="totalSuppliers">0</h3>
+                        <small>Registered suppliers</small>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTENT GRID -->
+            <section class="dashboard-grid">
+
+
+                <!-- LOW STOCK -->
+                <div class="dashboard-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="panel-label">
+                                ATTENTION REQUIRED
+                            </span>
+
+                            <h2>Restock Alerts</h2>
+                        </div>
+
+                        <a href="materials.html">
+                            View All →
+                        </a>
+
+                    </div>
+
+                    <div id="lowStockList" class="alert-list">
+
+                        <div class="empty-state">
+                            <span>✓</span>
+                            <p>Checking stock levels...</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUICK ACTIONS -->
+                <div class="dashboard-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+                            <span class="panel-label">
+                                SHORTCUTS
+                            </span>
+
+                            <h2>Quick Actions</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="quick-actions">
+
+                        <a href="materials.html" class="quick-action">
+
+                            <div class="quick-icon">
+                                +
+                            </div>
+
+                            <div>
+                                <strong>Add Material</strong>
+                                <span>Register a new raw material</span>
+                            </div>
+
+                            <b>→</b>
+
+                        </a>
+
+
+                        <a href="stock.html" class="quick-action">
+
+                            <div class="quick-icon">
+                                ⇅
+                            </div>
+
+                            <div>
+                                <strong>Update Stock</strong>
+                                <span>Stock in / stock out</span>
+                            </div>
+
+                            <b>→</b>
+
+                        </a>
+
+
+                        <a href="suppliers.html" class="quick-action">
+
+                            <div class="quick-icon">
+                                ♙
+                            </div>
+
+                            <div>
+                                <strong>Add Supplier</strong>
+                                <span>Manage your vendors</span>
+                            </div>
+
+                            <b>→</b>
+
+                        </a>
+
+
+                        <a href="bom.html" class="quick-action">
+
+                            <div class="quick-icon">
+                                ▤
+                            </div>
+
+                            <div>
+                                <strong>BOM Calculator</strong>
+                                <span>Calculate material requirements</span>
+                            </div>
+
+                            <b>→</b>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RECENT TRANSACTIONS -->
+            <section class="dashboard-panel transactions-panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span class="panel-label">
+                            ACTIVITY
+                        </span>
+
+                        <h2>Recent Stock Transactions</h2>
+                    </div>
+
+                    <a href="stock.html">
+                        View All →
+                    </a>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Material</th>
+                                <th>Transaction</th>
+                                <th>Quantity</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="recentTransactions">
+
+                            <tr>
+                                <td colspan="5" class="table-loading">
+                                    Loading transactions...
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script src="js/dashboard.js"></script>
+<!-- <script src="js/notifications.js"></script> -->
+
+</body>
+
+</html>
